@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { Container } from "@/components/ui/container";
 import { Card } from "@/components/ui/card";
 import { Lock } from "lucide-react";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "updating" | "success" | "error">("idle");
@@ -102,5 +102,23 @@ export default function ResetPasswordPage() {
         )}
       </Card>
     </Container>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <Container className="flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md p-8 space-y-6">
+          <h1 className="text-2xl font-bold text-center">Reset Your Password</h1>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </Card>
+      </Container>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
