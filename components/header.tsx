@@ -5,20 +5,44 @@ import {
   X,
   Brain,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./theme-toggle";
 import { SignInButton } from "@/components/auth/sign-in-button";
+import { getCurrentUser, supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/journal", label: "Journal" },
-  { href: "/therapy", label: "Therapy" },
-  { href: "/settings", label: "Settings" },
+  { href: "/features", label: "Features" },
+  { href: "/about", label: "About" },
 ];
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    // Get initial user state
+    const getUser = async () => {
+      const { user } = await getCurrentUser();
+      setUser(user);
+    };
+    getUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Add Dashboard to nav items when user is logged in
+  const dynamicNavItems = user 
+    ? [{ href: "/dashboard", label: "Dashboard" }, ...navItems]
+    : navItems;
 
   return (
     <div className="w-full fixed top-0 z-50 bg-background/95 backdrop-blur">
@@ -39,7 +63,7 @@ export function Header() {
         {/* Desktop Navigation */}
         <div className="flex items-center gap-4">
           <nav className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => (
+            {dynamicNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -71,7 +95,7 @@ export function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t border-primary/10 px-4">
           <nav className="flex flex-col space-y-1 py-4">
-            {navItems.map((item) => (
+            {dynamicNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

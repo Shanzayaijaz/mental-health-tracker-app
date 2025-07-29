@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
-import { motion, useAnimation } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import { motion, useAnimation } from 'framer-motion';
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 interface ScratchToRevealProps {
   children: React.ReactNode;
@@ -26,6 +26,40 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
   const [isComplete, setIsComplete] = useState(false);
 
   const controls = useAnimation();
+
+  const checkCompletion = useCallback(() => {
+    if (isComplete) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (canvas && ctx) {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+      const totalPixels = pixels.length / 4;
+      let clearPixels = 0;
+
+      for (let i = 3; i < pixels.length; i += 4) {
+        if (pixels[i] === 0) clearPixels++;
+      }
+
+      const percentage = (clearPixels / totalPixels) * 100;
+
+      if (percentage >= minScratchPercentage) {
+        setIsComplete(true);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Call animation and onComplete directly
+        controls.start({
+          scale: [1, 1.5, 1],
+          rotate: [0, 10, -10, 10, -10, 0],
+          transition: { duration: 0.5 },
+        }).then(() => {
+          if (onComplete) {
+            onComplete();
+          }
+        });
+      }
+    }
+  }, [isComplete, minScratchPercentage, controls, onComplete]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -86,7 +120,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
       document.removeEventListener("touchend", handleDocumentTouchEnd);
       document.removeEventListener("touchcancel", handleDocumentTouchEnd);
     };
-  }, [isScratching]);
+  }, [isScratching, checkCompletion]);
 
   const handleMouseDown = () => setIsScratching(true);
 
@@ -106,43 +140,7 @@ export const ScratchToReveal: React.FC<ScratchToRevealProps> = ({
     }
   };
 
-  const startAnimation = async () => {
-    await controls.start({
-      scale: [1, 1.5, 1],
-      rotate: [0, 10, -10, 10, -10, 0],
-      transition: { duration: 0.5 },
-    });
 
-    // Call onComplete after animation finishes
-    if (onComplete) {
-      onComplete();
-    }
-  };
-
-  const checkCompletion = () => {
-    if (isComplete) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (canvas && ctx) {
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixels = imageData.data;
-      const totalPixels = pixels.length / 4;
-      let clearPixels = 0;
-
-      for (let i = 3; i < pixels.length; i += 4) {
-        if (pixels[i] === 0) clearPixels++;
-      }
-
-      const percentage = (clearPixels / totalPixels) * 100;
-
-      if (percentage >= minScratchPercentage) {
-        setIsComplete(true);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        startAnimation();
-      }
-    }
-  };
 
   return (
     <motion.div

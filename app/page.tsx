@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Ripple } from "@/components/ui/ripple";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, HeartPulse, Waves, Lightbulb, MessageCircle, Sparkles, SmilePlus, Calendar } from "lucide-react";
+import {  HeartPulse, Waves, Lightbulb, MessageCircle, Sparkles, SmilePlus, Calendar } from "lucide-react";
 export default function Home() {
   const emotions = [
     { value: 0, label: "😢 Sad", color: "bg-indigo-200" },
@@ -17,7 +16,6 @@ export default function Home() {
 
   const [selectedEmotion, setSelectedEmotion] = useState(60);
   const [mounted, setMounted] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
 
   const features = [
     {
@@ -108,7 +106,7 @@ export default function Home() {
             </span>
             <br />
             <span className="inline-block mt-2 bg-gradient-to-b from-foreground to-foreground/90 bg-clip-text text-transparent">
-              Let’s check in
+              Let&apos;s check in
             </span>
           </h1>
 
@@ -148,20 +146,6 @@ export default function Home() {
           You selected:{" "}
           <span className="font-bold">{currentEmotion.label}</span>
         </p>
-        {selectedEmotion && (
-  <Button
-    size="lg"
-    onClick={() => setShowDialog(true)}
-    className="relative group h-12 px-8 mt-6 rounded-full bg-gradient-to-r from-primary via-primary/90 to-secondary hover:to-primary shadow-lg shadow-primary/20 transition-all duration-500 hover:shadow-xl hover:shadow-primary/30"
-  >
-    <span className="relative z-10 font-medium flex items-center gap-2">
-    Talk About It
-      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-    </span>
-    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-size-200 bg-pos-0 group-hover:bg-pos-100" />
-  </Button>
-)}
-
       </motion.div>
       <section className="relative py-20 px-4 overflow-hidden">
   <div className="max-w-6xl mx-auto">
