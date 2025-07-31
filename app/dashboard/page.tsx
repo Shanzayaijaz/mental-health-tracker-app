@@ -644,7 +644,7 @@ export default function DashboardPage() {
               <Heart className="w-5 h-5 text-primary" />
             </div>
             
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
               {[
                 { mood: "happy", icon: Smile, color: "text-green-500" },
                 { mood: "excited", icon: Star, color: "text-yellow-500" },
@@ -661,14 +661,14 @@ export default function DashboardPage() {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => handleMoodSelect(mood as "happy" | "sad" | "neutral" | "excited" | "anxious" | "angry" | "grateful" | "tired")}
                   className={cn(
-                    "p-4 rounded-lg border-2 transition-colors",
+                    "p-3 sm:p-4 rounded-lg border-2 transition-colors min-h-[80px] sm:min-h-[100px]",
                     currentMood === mood
                       ? "border-primary bg-primary/10"
                       : "border-border hover:border-primary/50"
                   )}
                 >
-                  <Icon className={cn("w-8 h-8 mx-auto", color)} />
-                  <p className="text-sm font-medium text-foreground mt-2 capitalize">
+                  <Icon className={cn("w-6 h-6 sm:w-8 sm:h-8 mx-auto", color)} />
+                  <p className="text-xs sm:text-sm font-medium text-foreground mt-2 capitalize text-center break-words">
                     {mood}
                   </p>
                 </motion.button>
