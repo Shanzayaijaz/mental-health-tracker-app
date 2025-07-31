@@ -1,6 +1,10 @@
 #  MoodSync AI - Mental Health Wellness Platform
 
 A comprehensive mental health and wellness platform powered by AI, designed to help users track their emotional well-being, manage stress, and build healthy habits.
+## 🚀 Live Demo
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=for-the-badge)](https://mental-health-tracker-lilac.vercel.app/)   
+→ [Open mental-health-tracker dashboard](https://mental-health-tracker-lilac.vercel.app/) 
 
 ##  Features
 
