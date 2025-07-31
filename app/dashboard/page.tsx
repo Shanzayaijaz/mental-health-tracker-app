@@ -4,9 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Calendar, 
-  Bell, 
-  Settings, 
-  Search, 
+
   Plus,
   BarChart3,
   CheckCircle,
@@ -79,8 +77,6 @@ interface Goal {
 
 export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
-  const [notifications, setNotifications] = useState(3)
-  const [searchQuery, setSearchQuery] = useState("")
   const [currentMood, setCurrentMood] = useState<"happy" | "sad" | "neutral" | "excited" | "anxious" | "angry" | "grateful" | "tired" | null>(null)
   const [moodNote, setMoodNote] = useState("")
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([])
@@ -272,15 +268,9 @@ export default function DashboardPage() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Handle search
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query)
-  }, [])
 
-  // Clear notifications
-  const clearNotifications = useCallback(() => {
-    setNotifications(0)
-  }, [])
+
+
 
   // Handle mood selection
   const handleMoodSelect = useCallback((mood: "happy" | "sad" | "neutral" | "excited" | "anxious" | "angry" | "grateful" | "tired") => {
@@ -494,9 +484,6 @@ export default function DashboardPage() {
     setIsAnalyzing(true)
     setAnalysisResult("")
     
-    // Add notification
-    setNotifications(prev => prev + 1)
-    
     try {
       // Get current user first
       const { user, error: userError } = await getCurrentUser();
@@ -582,7 +569,7 @@ export default function DashboardPage() {
       <motion.header 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-card shadow-sm border-b border-border"
+        className="bg-card shadow-sm border-b border-border mt-16"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -598,63 +585,7 @@ export default function DashboardPage() {
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
-              {/* Search */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Search activities..."
-                  value={searchQuery}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-              </div>
 
-              {/* Notifications */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={clearNotifications}
-              >
-                <Bell className="w-5 h-5" />
-                {notifications > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-destructive text-destructive-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center"
-                  >
-                    {notifications}
-                  </motion.span>
-                )}
-              </motion.button>
-
-              {/* AI Analysis Quick Access */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={runMoodAnalysis}
-                disabled={isAnalyzing}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors relative"
-                title="Run Mood Analysis"
-              >
-                {isAnalyzing ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
-                ) : (
-                  <Brain className="w-5 h-5" />
-                )}
-              </motion.button>
-
-              {/* Settings */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Settings className="w-5 h-5" />
-              </motion.button>
-            </div>
           </div>
         </div>
       </motion.header>
